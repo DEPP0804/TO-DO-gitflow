@@ -13,7 +13,7 @@ export class TaskService {
     };
     this.tasks.push(task);
     saveTasks(this.tasks);
-    console.log("[GITFLOW] Task added:", title);
+    console.log("[GITFLOW] Tarea agregada:", title);
   }
 
   listTasks() {
@@ -25,7 +25,7 @@ export class TaskService {
   if (task) {
     task.completed = true;
     saveTasks(this.tasks);
-    console.log("[GITFLOW] Task completed:", task.title);
+    console.log("[GITFLOW] Tarea completada:", task.title);
   }
 }
 
@@ -35,7 +35,7 @@ export class TaskService {
     saveTasks(this.tasks);
 
     if (this.tasks.length < before) {
-        console.log("[GITFLOW] Task deleted");
+        console.log("[GITFLOW] Tarea eliminada con ID:", id);
     }
 }
 }
