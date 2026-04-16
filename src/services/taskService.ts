@@ -25,4 +25,13 @@ export class TaskService {
     console.log("[GITFLOW] Task completed:", task.title);
   }
 }
+
+    deleteTask(id: number) {
+    const before = this.tasks.length;
+    this.tasks = this.tasks.filter(t => t.id !== id);
+
+    if (this.tasks.length < before) {
+        console.log("[GITFLOW] Task deleted");
+    }
+}
 }
