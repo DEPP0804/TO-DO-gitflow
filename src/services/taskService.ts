@@ -17,4 +17,12 @@ export class TaskService {
   listTasks() {
     return this.tasks;
   }
+
+  completeTask(id: number) {
+  const task = this.tasks.find(t => t.id === id);
+  if (task) {
+    task.completed = true;
+    console.log("[GITFLOW] Task completed:", task.title);
+  }
+}
 }
