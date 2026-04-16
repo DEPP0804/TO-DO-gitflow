@@ -3,7 +3,7 @@ import { saveTasks, loadTasks } from "../utils/storage";
 
 export class TaskService {
   private tasks: Task[] = loadTasks();
-  private idCounter = 1;
+  private idCounter = this.tasks.length > 0 ? Math.max(...this.tasks.map(t => t.id)) + 1 : 1;
 
   addTask(title: string) {
     const task: Task = {
