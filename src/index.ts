@@ -9,4 +9,4 @@ service.addTask("Comparar con GitFlow");
 
 service.completeTask(1);
 
-console.log("Tasks:", service.listTasks());
+console.log("Tareas actuales:", service.listTasks());
