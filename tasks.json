@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "title": "Estudiar GitFlow",
+    "completed": true
+  },
+  {
+    "id": 3,
+    "title": "Crear un proyecto con con Trunk-Based Development",
+    "completed": false
+  }
+]
