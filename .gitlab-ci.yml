@@ -1,3 +1,5 @@
+image: node:20
+
 stages:
   - install
   - test
@@ -6,7 +8,7 @@ stages:
   - deploy
 
 variables:
-  SONAR_HOST_URL: "http://localhost:9000"
+  SONAR_HOST_URL: "http://sonarqube:9000"
 
 # Cache node_modules entre jobs
 cache:
@@ -22,8 +24,6 @@ cache:
 
 install:backend:
   stage: install
-  tags:
-    - local
   script:
     - npm ci
   artifacts:
@@ -32,8 +32,6 @@ install:backend:
 
 install:frontend:
   stage: install
-  tags:
-    - local
   script:
     - cd frontend && npm ci
   artifacts:
@@ -44,16 +42,13 @@ install:frontend:
 
 test:backend:
   stage: test
-  tags:
-    - local
   script:
-    - npm ci
     - npm test -- --coverage
   coverage: '/Lines\s*:\s*(\d+\.?\d*)%/'
   artifacts:
     when: always
     reports:
-      junit: test-results/junit.xml
+      junit: coverage/junit.xml
       coverage_report:
         coverage_format: cobertura
         path: coverage/cobertura-coverage.xml
@@ -64,10 +59,8 @@ test:backend:
 
 test:frontend:
   stage: test
-  tags:
-    - local
   script:
-    - cd frontend && npm ci && npm test -- --run
+    - cd frontend && npm test -- --run
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "develop"'
@@ -77,8 +70,6 @@ test:frontend:
 
 build:backend:
   stage: build
-  tags:
-    - local
   script:
     - npm run build
   artifacts:
@@ -91,8 +82,6 @@ build:backend:
 
 build:frontend:
   stage: build
-  tags:
-    - local
   script:
     - cd frontend && npm run build
   artifacts:
@@ -107,14 +96,21 @@ build:frontend:
 
 sonarqube:
   stage: analyze
-  tags:
-    - local
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
   script:
-    - $env:SONAR_HOST = $SONAR_HOST_URL
-    - $env:SONAR_TOK = $SONAR_TOKEN
-    - npx sonar-scanner "-Dsonar.projectKey=gitflow-todo" "-Dsonar.projectName=GitFlow To-Do" "-Dsonar.sources=src,frontend/src" "-Dsonar.exclusions=**/node_modules/**,**/dist/**,**/*.test.ts" "-Dsonar.javascript.lcov.reportPaths=coverage/lcov.info" "-Dsonar.host.url=$env:SONAR_HOST" "-Dsonar.token=$env:SONAR_TOK"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - sonar-scanner
+      -Dsonar.projectKey=gitflow-todo
+      -Dsonar.projectName="GitFlow To-Do"
+      -Dsonar.sources=src,frontend/src
+      -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/*.test.ts
+      -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      -Dsonar.host.url=$SONAR_HOST_URL
+      -Dsonar.token=$SONAR_TOKEN
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_COMMIT_BRANCH =~ /^release\/.*/'
@@ -122,10 +118,14 @@ sonarqube:
 
 owasp-dependency-check:
   stage: analyze
-  tags:
-    - local
+  image: owasp/dependency-check:latest
   script:
-    - docker run --rm -v "%CD%:/src" -v "dependency-check-data:/usr/share/dependency-check/data" -v "%CD%/reports:/report" owasp/dependency-check:latest --scan /src --format HTML --format JSON --project "gitflow-todo" --out /report
+    - /usr/share/dependency-check/bin/dependency-check.sh
+      --scan .
+      --format HTML
+      --format JSON
+      --project "gitflow-todo"
+      --out reports/
   artifacts:
     paths:
       - reports/
@@ -138,8 +138,6 @@ owasp-dependency-check:
 
 deploy:staging:
   stage: deploy
-  tags:
-    - local
   environment:
     name: staging
   script:
@@ -150,8 +148,6 @@ deploy:staging:
 
 deploy:production:
   stage: deploy
-  tags:
-    - local
   environment:
     name: production
   script:
