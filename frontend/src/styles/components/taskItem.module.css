@@ -1,0 +1,122 @@
+.item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: border-color 0.15s, background 0.15s;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.item:hover {
+  border-color: #38384a;
+  background: var(--surface2);
+}
+
+.done {
+  border-color: rgba(46, 168, 126, 0.2);
+  background: rgba(46, 168, 126, 0.04);
+}
+
+.check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s, background 0.15s;
+  padding: 0;
+}
+
+.check:hover:not(:disabled) {
+  border-color: var(--done);
+}
+
+.done .check {
+  background: var(--done);
+  border-color: var(--done);
+  color: #fff;
+}
+
+.check svg {
+  width: 11px;
+  height: 11px;
+}
+
+.title {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.done .title span {
+  color: var(--text-dim);
+  text-decoration: line-through;
+  text-decoration-color: var(--text-muted);
+}
+
+.editInput {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--accent-dim);
+  border-radius: 5px;
+  padding: 3px 8px;
+  outline: none;
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.item:hover .actions {
+  opacity: 1;
+}
+
+.iconBtn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 4px 6px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  transition: all 0.12s;
+}
+
+.iconBtn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.edit:hover {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+  background: var(--accent-glow);
+}
+
+.del:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: var(--danger-dim);
+}

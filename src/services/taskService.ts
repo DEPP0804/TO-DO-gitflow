@@ -3,9 +3,10 @@ import { saveTasks, loadTasks } from "../utils/storage";
 
 export class TaskService {
   private tasks: Task[] = loadTasks();
-  private idCounter = this.tasks.length > 0 ? Math.max(...this.tasks.map(t => t.id)) + 1 : 1;
+  private idCounter =
+    this.tasks.length > 0 ? Math.max(...this.tasks.map((t) => t.id)) + 1 : 1;
 
-  addTask(title: string) {
+  addTask(title: string): Task {
     const task: Task = {
       id: this.idCounter++,
       title,
@@ -14,28 +15,37 @@ export class TaskService {
     this.tasks.push(task);
     saveTasks(this.tasks);
     console.log("[GITFLOW] Task added:", title);
+    return task;
   }
 
-  listTasks() {
+  listTasks(): Task[] {
     return this.tasks;
   }
 
-  completeTask(id: number) {
-  const task = this.tasks.find(t => t.id === id);
-  if (task) {
+  completeTask(id: number): Task | null {
+    const task = this.tasks.find((t) => t.id === id);
+    if (!task) return null;
     task.completed = true;
     saveTasks(this.tasks);
     console.log("[GITFLOW] Task completed:", task.title);
+    return task;
   }
-}
 
-    deleteTask(id: number) {
-    const before = this.tasks.length;
-    this.tasks = this.tasks.filter(t => t.id !== id);
+  editTask(id: number, title: string): Task | null {
+    const task = this.tasks.find((t) => t.id === id);
+    if (!task) return null;
+    task.title = title;
     saveTasks(this.tasks);
+    console.log("[GITFLOW] Task edited:", task.title);
+    return task;
+  }
 
-    if (this.tasks.length < before) {
-        console.log("[GITFLOW] Task deleted");
-    }
-}
+  deleteTask(id: number): boolean {
+    const before = this.tasks.length;
+    this.tasks = this.tasks.filter((t) => t.id !== id);
+    if (this.tasks.length === before) return false;
+    saveTasks(this.tasks);
+    console.log("[GITFLOW] Task deleted:", id);
+    return true;
+  }
 }
