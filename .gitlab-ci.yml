@@ -1,0 +1,158 @@
+image: node:20
+
+stages:
+  - install
+  - test
+  - build
+  - analyze
+  - deploy
+
+variables:
+  SONAR_HOST_URL: "http://sonarqube:9000"
+
+# Cache node_modules entre jobs
+cache:
+  key:
+    files:
+      - package-lock.json
+      - frontend/package-lock.json
+  paths:
+    - node_modules/
+    - frontend/node_modules/
+
+# ─── INSTALL ────────────────────────────────────────────────────────────────
+
+install:backend:
+  stage: install
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+
+install:frontend:
+  stage: install
+  script:
+    - cd frontend && npm ci
+  artifacts:
+    paths:
+      - frontend/node_modules/
+
+# ─── TEST ───────────────────────────────────────────────────────────────────
+
+test:backend:
+  stage: test
+  script:
+    - npm test -- --coverage
+  coverage: '/Lines\s*:\s*(\d+\.?\d*)%/'
+  artifacts:
+    when: always
+    reports:
+      junit: coverage/junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+test:frontend:
+  stage: test
+  script:
+    - cd frontend && npm test -- --run
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# ─── BUILD ──────────────────────────────────────────────────────────────────
+
+build:backend:
+  stage: build
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH =~ /^release\/.*/'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+build:frontend:
+  stage: build
+  script:
+    - cd frontend && npm run build
+  artifacts:
+    paths:
+      - frontend/dist/
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH =~ /^release\/.*/'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# ─── ANALYZE ────────────────────────────────────────────────────────────────
+
+sonarqube:
+  stage: analyze
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
+  script:
+    - sonar-scanner
+      -Dsonar.projectKey=gitflow-todo
+      -Dsonar.projectName="GitFlow To-Do"
+      -Dsonar.sources=src,frontend/src
+      -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/*.test.ts
+      -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      -Dsonar.host.url=$SONAR_HOST_URL
+      -Dsonar.token=$SONAR_TOKEN
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH =~ /^release\/.*/'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+owasp-dependency-check:
+  stage: analyze
+  image: owasp/dependency-check:latest
+  script:
+    - /usr/share/dependency-check/bin/dependency-check.sh
+      --scan .
+      --format HTML
+      --format JSON
+      --project "gitflow-todo"
+      --out reports/
+  artifacts:
+    paths:
+      - reports/
+    when: always
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^release\/.*/'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# ─── DEPLOY ─────────────────────────────────────────────────────────────────
+
+deploy:staging:
+  stage: deploy
+  environment:
+    name: staging
+  script:
+    - echo "Deploying to staging..."
+    - npm start
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+
+deploy:production:
+  stage: deploy
+  environment:
+    name: production
+  script:
+    - echo "Deploying to production..."
+    - npm start
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  when: manual
