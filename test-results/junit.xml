@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="14" failures="0" errors="0" time="2.051">
+  <testsuite name="TaskService" errors="0" failures="0" skipped="0" timestamp="2026-05-07T11:32:52" time="1.47" tests="14">
+    <testcase classname="TaskService addTask debe agregar una tarea y retornarla" name="TaskService addTask debe agregar una tarea y retornarla" time="0.049">
+    </testcase>
+    <testcase classname="TaskService addTask debe incrementar el ID por cada tarea agregada" name="TaskService addTask debe incrementar el ID por cada tarea agregada" time="0.025">
+    </testcase>
+    <testcase classname="TaskService addTask debe llamar a saveTasks al agregar" name="TaskService addTask debe llamar a saveTasks al agregar" time="0.007">
+    </testcase>
+    <testcase classname="TaskService listTasks debe retornar lista vacía al inicio" name="TaskService listTasks debe retornar lista vacía al inicio" time="0.002">
+    </testcase>
+    <testcase classname="TaskService listTasks debe retornar todas las tareas agregadas" name="TaskService listTasks debe retornar todas las tareas agregadas" time="0.011">
+    </testcase>
+    <testcase classname="TaskService completeTask debe marcar una tarea como completada" name="TaskService completeTask debe marcar una tarea como completada" time="0.01">
+    </testcase>
+    <testcase classname="TaskService completeTask debe retornar null si la tarea no existe" name="TaskService completeTask debe retornar null si la tarea no existe" time="0.001">
+    </testcase>
+    <testcase classname="TaskService completeTask debe llamar a saveTasks al completar" name="TaskService completeTask debe llamar a saveTasks al completar" time="0.01">
+    </testcase>
+    <testcase classname="TaskService editTask debe editar el título de una tarea" name="TaskService editTask debe editar el título de una tarea" time="0.013">
+    </testcase>
+    <testcase classname="TaskService editTask debe retornar null si la tarea no existe" name="TaskService editTask debe retornar null si la tarea no existe" time="0.002">
+    </testcase>
+    <testcase classname="TaskService editTask debe llamar a saveTasks al editar" name="TaskService editTask debe llamar a saveTasks al editar" time="0.01">
+    </testcase>
+    <testcase classname="TaskService deleteTask debe eliminar una tarea existente y retornar true" name="TaskService deleteTask debe eliminar una tarea existente y retornar true" time="0.009">
+    </testcase>
+    <testcase classname="TaskService deleteTask debe retornar false si la tarea no existe" name="TaskService deleteTask debe retornar false si la tarea no existe" time="0.001">
+    </testcase>
+    <testcase classname="TaskService deleteTask debe llamar a saveTasks al eliminar" name="TaskService deleteTask debe llamar a saveTasks al eliminar" time="0.01">
+    </testcase>
+  </testsuite>
+</testsuites>
