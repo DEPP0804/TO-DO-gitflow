@@ -47,7 +47,6 @@ test:backend:
   tags:
     - local
   script:
-    - npm ci
     - npm test -- --coverage
   coverage: '/Lines\s*:\s*(\d+\.?\d*)%/'
   artifacts:
@@ -67,7 +66,7 @@ test:frontend:
   tags:
     - local
   script:
-    - cd frontend && npm ci && npm test -- --run
+    - cd frontend && npm test -- --run
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "develop"'
