@@ -110,14 +110,7 @@ sonarqube:
   tags:
     - local
   script:
-    - npx sonar-scanner
-      -Dsonar.projectKey=gitflow-todo
-      -Dsonar.projectName="GitFlow To-Do"
-      -Dsonar.sources=src,frontend/src
-      -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/*.test.ts
-      -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-      -Dsonar.host.url=%SONAR_HOST_URL%
-      -Dsonar.token=%SONAR_TOKEN%
+    - npx sonar-scanner -Dsonar.projectKey=gitflow-todo -Dsonar.projectName="GitFlow To-Do" -Dsonar.sources=src,frontend/src -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/*.test.ts -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info -Dsonar.host.url=%SONAR_HOST_URL% -Dsonar.token=%SONAR_TOKEN%
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_COMMIT_BRANCH =~ /^release\/.*/'
@@ -128,16 +121,7 @@ owasp-dependency-check:
   tags:
     - local
   script:
-    - docker run --rm
-      -v "%CD%:/src"
-      -v "dependency-check-data:/usr/share/dependency-check/data"
-      -v "%CD%/reports:/report"
-      owasp/dependency-check:latest
-      --scan /src
-      --format HTML
-      --format JSON
-      --project "gitflow-todo"
-      --out /report
+    - docker run --rm -v "%CD%:/src" -v "dependency-check-data:/usr/share/dependency-check/data" -v "%CD%/reports:/report" owasp/dependency-check:latest --scan /src --format HTML --format JSON --project "gitflow-todo" --out /report
   artifacts:
     paths:
       - reports/
