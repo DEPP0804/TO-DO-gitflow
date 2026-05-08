@@ -116,7 +116,7 @@ sonarqube:
     - npx sonar-scanner "-Dsonar.projectKey=gitflow-todo" "-Dsonar.projectName=GitFlow To-Do" "-Dsonar.sources=src,frontend/src" "-Dsonar.exclusions=**/node_modules/**,**/dist/**,**/*.test.ts" "-Dsonar.javascript.lcov.reportPaths=coverage/lcov.info" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.token=$env:SONAR_TOKEN"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "develop"' # temporal
     - if: '$CI_COMMIT_BRANCH =~ /^release\/.*/'
     - if: '$CI_COMMIT_BRANCH == "main"'
 
@@ -126,13 +126,14 @@ owasp-dependency-check:
     - local
   script:
     - $src = (Get-Location).Path
-    - docker run --rm -v "${src}:/src" -v "dependency-check-data:/usr/share/dependency-check/data" -v "${src}/reports:/report" owasp/dependency-check:latest --scan /src --format HTML --format JSON --project "gitflow-todo" --out /report
+    - docker run --rm -v "${src}:/src" -v "dependency-check-data:/usr/share/dependency-check/data" -v "${src}/reports:/report" owasp/dependency-check:latest --nvdApiKey $env:NVD_API_KEY --scan /src --format HTML --format JSON --project "gitflow-todo" --out /report
   artifacts:
     paths:
       - reports/
     when: always
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_COMMIT_BRANCH == "develop"' # temporal
     - if: '$CI_COMMIT_BRANCH =~ /^release\/.*/'
     - if: '$CI_COMMIT_BRANCH == "main"'
 
