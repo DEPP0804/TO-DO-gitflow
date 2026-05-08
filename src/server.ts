@@ -1,9 +1,12 @@
 import express from "express";
 import path from "path";
+import cors from "cors";
 import taskRoutes from "./routes/taskRoutes";
 
 const app = express();
 const PORT = 3000;
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));

@@ -6,7 +6,8 @@ export interface Task {
   completed: boolean;
 }
 
-const BASE = "/api/tasks";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const BASE = `${API_URL}/api/tasks`;
 
 export const getTasks = () =>
   axios.get<Task[]>(BASE).then((r) => r.data);
