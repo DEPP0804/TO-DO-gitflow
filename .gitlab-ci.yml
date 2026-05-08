@@ -124,7 +124,8 @@ owasp-dependency-check:
   tags:
     - local
   script:
-    - docker run --rm -v "%CD%:/src" -v "dependency-check-data:/usr/share/dependency-check/data" -v "%CD%/reports:/report" owasp/dependency-check:latest --scan /src --format HTML --format JSON --project "gitflow-todo" --out /report
+    - $src = (Get-Location).Path
+    - docker run --rm -v "${src}:/src" -v "dependency-check-data:/usr/share/dependency-check/data" -v "${src}/reports:/report" owasp/dependency-check:latest --scan /src --format HTML --format JSON --project "gitflow-todo" --out /report
   artifacts:
     paths:
       - reports/
