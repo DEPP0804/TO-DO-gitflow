@@ -122,11 +122,12 @@ sonarqube:
 
 owasp-dependency-check:
   stage: analyze
+  timeout: 2h
   tags:
     - local
   script:
     - $src = (Get-Location).Path
-    - docker run --rm -v "${src}:/src" -v "dependency-check-data:/usr/share/dependency-check/data" -v "${src}/reports:/report" owasp/dependency-check:latest --nvdApiKey $env:NVD_API_KEY --scan /src --format HTML --format JSON --project "gitflow-todo" --out /report
+    - docker run --rm -v "${src}:/src" -v "dependency-check-data:/usr/share/dependency-check/data" -v "${src}/reports:/report" owasp/dependency-check:latest --nvdApiKey $env:NVD_API_KEY --nvdApiDelay 5000 --scan /src --exclude **/node_modules/** --exclude **/dist/** --format HTML --format JSON --project "gitflow-todo" --out /report
   artifacts:
     paths:
       - reports/
