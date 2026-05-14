@@ -11,7 +11,7 @@ import AddTask from "./components/addTask";
 import TaskList from "./components/taskList";
 import styles from "./styles/app.module.css";
 
-type Filter = "all" | "pending" | "done"; //Comentario para probar ngrok
+type Filter = "all" | "pending" | "done";
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
