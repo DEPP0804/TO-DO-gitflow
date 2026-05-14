@@ -8,7 +8,7 @@ interface Props {
 export default function AddTask({ onAdd }: Props) {
   const [value, setValue] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmed = value.trim();
     if (!trimmed) return;
