@@ -3,6 +3,7 @@ import {
   getTasks,
   addTask,
   completeTask,
+  uncompleteTask,
   editTask,
   deleteTask,
   type Task,
@@ -39,6 +40,12 @@ export default function App() {
     showToast("Task completed ✓");
   };
 
+  const handleUncomplete = async (id: number) => {
+    const updated = await uncompleteTask(id);
+    setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+    showToast("Task marked incomplete");
+  };
+
   const handleEdit = async (id: number, title: string) => {
     const updated = await editTask(id, title);
     setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
@@ -68,6 +75,7 @@ export default function App() {
           filter={filter}
           onFilterChange={setFilter}
           onComplete={handleComplete}
+          onUncomplete={handleUncomplete}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />

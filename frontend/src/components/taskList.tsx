@@ -9,6 +9,7 @@ interface Props {
   filter: Filter;
   onFilterChange: (f: Filter) => void;
   onComplete: (id: number) => void;
+  onUncomplete: (id: number) => void;
   onEdit: (id: number, title: string) => void;
   onDelete: (id: number) => void;
 }
@@ -18,6 +19,7 @@ export default function TaskList({
   filter,
   onFilterChange,
   onComplete,
+  onUncomplete,
   onEdit,
   onDelete,
 }: Props) {
@@ -59,6 +61,7 @@ export default function TaskList({
               key={task.id}
               task={task}
               onComplete={onComplete}
+              onUncomplete={onUncomplete}
               onEdit={onEdit}
               onDelete={onDelete}
             />

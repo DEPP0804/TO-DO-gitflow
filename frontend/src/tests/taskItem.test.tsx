@@ -22,6 +22,7 @@ describe("TaskItem", () => {
       <TaskItem
         task={mockTask}
         onComplete={vi.fn()}
+        onUncomplete={vi.fn()}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
       />
@@ -36,6 +37,7 @@ describe("TaskItem", () => {
       <TaskItem
         task={mockTask}
         onComplete={onComplete}
+        onUncomplete={vi.fn()}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
       />
@@ -45,19 +47,20 @@ describe("TaskItem", () => {
     expect(onComplete).toHaveBeenCalledWith(1);
   });
 
-  it("no debe llamar onComplete si la tarea ya está completada", async () => {
-    const onComplete = vi.fn();
+  it("debe llamar onUncomplete si la tarea ya está completada", async () => {
+    const onUncomplete = vi.fn();
     render(
       <TaskItem
         task={mockTaskDone}
-        onComplete={onComplete}
+        onComplete={vi.fn()}
+        onUncomplete={onUncomplete}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
       />
     );
 
-    await userEvent.click(screen.getByRole("button", { name: /complete/i }));
-    expect(onComplete).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole("button", { name: /incomplete/i }));
+    expect(onUncomplete).toHaveBeenCalledWith(2);
   });
 
   it("debe llamar onDelete al hacer click en eliminar", async () => {
@@ -66,6 +69,7 @@ describe("TaskItem", () => {
       <TaskItem
         task={mockTask}
         onComplete={vi.fn()}
+        onUncomplete={vi.fn()}
         onEdit={vi.fn()}
         onDelete={onDelete}
       />
@@ -80,6 +84,7 @@ describe("TaskItem", () => {
       <TaskItem
         task={mockTask}
         onComplete={vi.fn()}
+        onUncomplete={vi.fn()}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
       />
@@ -95,6 +100,7 @@ describe("TaskItem", () => {
       <TaskItem
         task={mockTask}
         onComplete={vi.fn()}
+        onUncomplete={vi.fn()}
         onEdit={onEdit}
         onDelete={vi.fn()}
       />

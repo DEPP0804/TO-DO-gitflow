@@ -48,4 +48,13 @@ export class TaskService {
     console.log("[GITFLOW] Task deleted:", id);
     return true;
   }
+
+  uncompleteTask(id: number): Task | null {
+    const task = this.tasks.find((t) => t.id === id);
+    if (!task) return null;
+    task.completed = false;
+    saveTasks(this.tasks);
+    console.log("[GITFLOW] Task uncompleted:", task.title);
+    return task;
+  }
 }

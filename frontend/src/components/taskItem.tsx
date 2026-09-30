@@ -5,11 +5,12 @@ import styles from "../styles/components/taskItem.module.css";
 interface Props {
   task: Task;
   onComplete: (id: number) => void;
+  onUncomplete: (id: number) => void;
   onEdit: (id: number, title: string) => void;
   onDelete: (id: number) => void;
 }
 
-export default function TaskItem({ task, onComplete, onEdit, onDelete }: Props) {
+export default function TaskItem({ task, onComplete, onUncomplete, onEdit, onDelete }: Props) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(task.title);
 
@@ -36,9 +37,8 @@ export default function TaskItem({ task, onComplete, onEdit, onDelete }: Props) 
     <div className={`${styles.item} ${task.completed ? styles.done : ""}`}>
       <button
         className={styles.check}
-        onClick={() => !task.completed && onComplete(task.id)}
-        aria-label="Complete task"
-        disabled={task.completed}
+        onClick={() => task.completed ? onUncomplete(task.id) : onComplete(task.id)}
+        aria-label={task.completed ? "Mark task incomplete" : "Complete task"}
       >
         {task.completed && (
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">

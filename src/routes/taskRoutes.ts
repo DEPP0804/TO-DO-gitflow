@@ -53,4 +53,14 @@ router.delete("/:id", (req, res) => {
   res.status(204).send();
 });
 
+router.patch("/:id/uncomplete", (req, res) => {
+  const id = parseInt(req.params.id);
+  const task = service.uncompleteTask(id);
+  if (!task) {
+    res.status(404).json({ error: "Task not found" });
+    return;
+  }
+  res.json(task);
+});
+
 export default router;

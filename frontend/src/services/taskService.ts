@@ -23,3 +23,6 @@ export const editTask = (id: number, title: string) =>
 
 export const deleteTask = (id: number) =>
   axios.delete(`${BASE}/${id}`);
+
+export const uncompleteTask = (id: number) =>
+  axios.patch<Task>(`${BASE}/${id}/uncomplete`).then((r) => r.data);
